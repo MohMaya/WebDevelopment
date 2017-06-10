@@ -1,2 +1,1 @@
-# internhere
-A basic WEBAPPLICATION
+An Internship Website
