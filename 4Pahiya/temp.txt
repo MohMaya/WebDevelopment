@@ -1,0 +1,22 @@
+/*<?php
+          $n=$_POST['name'];
+          $p=$_POST['phone'];
+          $m=$_POST['comments'];
+          $e=$_POST['email'];
+          echo "$n $p $m $e";
+          $sql="INSERT INTO `Contact` (`Name`, `Phone`, `Message`, `email`) VALUES ($n,$p, $m, $e)";
+          $sqltry = "SELECT * FROM `Contact`";
+          if (mysqli_connect_errno())
+            {
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+
+          if(mysqli_query($conn,$sql))
+          {
+                  echo "Added";
+          }else {
+                  echo "Not Added";
+          }
+
+
+ ?>*/
