@@ -12,12 +12,11 @@
     else{
         $status = $_SESSION['status'];
         if($status == 2){
-            #header('location:studentDashboard.php');
-            echo "$status";
+            header('location:studentDashboard.php');
             exit(0);
 
         }elseif($status == 0){
-            #header('location:signUPForm.php');
+            header('location:signUPForm.php');
             echo "$status";
             exit(0);
         }
@@ -42,7 +41,16 @@
           <link href='css/ripples.min.css' rel='stylesheet'>
           <link href='css/snackbar.css' rel='stylesheet'>
           <link href='css/responsivetable.css' rel='stylesheet'>
+          <link href='css/jstyle.css' rel='stylesheet'>
+          <script src='js/jquery-ui.js'></script>
+          <script src='js/jquery-1.12.4.js'></script>
+          <link rel='stylesheet' href='css/jquery-ui.css'>
           <title>Teacher Dashboard</title>
+          <script>
+              $( function() {
+                $( '#datepicker' ).datepicker();
+              } );
+          </script>
           <script>
               function subject_acc_to_sem(){
                   var sem = document.getElementById('semesterSelect').value;
@@ -63,11 +71,58 @@
                   xmlhttp.send();
               }
 
-              function load_complete_list(){}
+              function load_complete_list(){
 
-              function load_day_list(){}
+                var subCode = document.getElementById('subjectSelect').value;
+                if (window.XMLHttpRequest) {
 
+                    xmlhttp = new XMLHttpRequest();
+                } else {
 
+                    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                }
+                var res_text;
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById('class_list').innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open('GET','teacherBackend.php?req='+2+'&subjectCode='+subCode,true);
+                xmlhttp.send();
+              }
+
+              function editable_list(){
+                var subCode = document.getElementById('date_to_edit').value;
+                if (window.XMLHttpRequest) {
+
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+
+                    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                }
+                var res_text;
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById('class_list').innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open('GET','teacherBackend.php?req='+3+'&subjectCode='+subCode,true);
+                xmlhttp.send();
+              }
+              function date_validate(){
+                console.log('validating Date');
+                var date_section = document.getElementById('date_to_edit');
+                var date_entered = document.getElementById('date_to_edit').value;
+                console.log(date_entered);
+                var pattern_of_date = /[1-9][0-9][0-9][0-9]-(00|01|02|03|04|05|06|07|08|09|10|11|12)-(00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)/;
+                var date_validity_status = pattern_of_date.test(date_entered);
+                console.log(date_validity_status);
+                if(!date_validity_status){
+                  date_section.style.backgroundColor = '#ff6666';
+                }else{
+                  date_section.style.backgroundColor = '#f2f2f2';
+                }
+              }
           </script>
 
       </head>
@@ -106,10 +161,6 @@
               <h3>TEACHER'S DASHBOARD</h3>
           </div>
 
-          <div class='jumbotron bs-component' id='testfield' style='text-align:center;'>
-
-          </div>
-
           <div class='tab-content row'>
               <div id='ManualAttendance' class='tab-pane fade in active'>
                   <div class='jumbotron' style='text-align:center;'>
@@ -121,10 +172,10 @@
                                       Please Choose A Semester And A Subject:
                                   </legend>
                                   <div class='form-group'>
-                                      <label for='semesterSelect' class='col-md-4'>Semester :</label>
+                                      <label for='semesterSelect' class='col-md-4'> Semester :</label>
                                       <div class='col-md-4'>
                                           <select id='semesterSelect' class='form-control' onchange='subject_acc_to_sem();'>
-                                            <option value='0'>0</option>";
+                                            <option value='0'>None</option>";
 
 
           $query_to_get_semesters_taught = "SELECT * FROM `subjects` WHERE `teacher_id` = $teacher_id ORDER BY `semester`";
@@ -136,19 +187,19 @@
               ";
           }
 
-          echo"    </select>
-                  </div>
-                    </div>
-                    <div class='form-group'>
-                      <label for='subjectSelect' class='col-md-4'>Subject :</label>
-                      <div class='col-md-4'>
-                          <select id='subjectSelect' class='form-control'>
-                          </select>
-                      </div>
-                    </div>
-                    <button type='button' class='btn btn-primary' onclick='load_complete_list();'>Open The List</button>
-                  </fieldset>
-                  </form>
+        echo"                           </select>
+                                    </div>
+                                  </div>
+                                  <div class='form-group'>
+                                      <label for='subjectSelect' class='col-md-4'>Subject :</label>
+                                      <div class='col-md-6'>
+                                            <select id='subjectSelect' class='form-control'>
+                                            </select>
+                                      </div>
+                                  </div>
+                                  <button type='button' class='btn btn-primary' onclick='load_complete_list();return false;'>Open The List</button>
+                            </fieldset>
+                      </form>
                 </div>
               </div>
               <br>
@@ -165,68 +216,25 @@
             </div>
 
         </div>
+        ";
 
+echo "
+<div class='container-fluid' id='class_list' style='padding:5px;'>
 
-      
-        <div class='jumbotron' id ='class_list_uneditable'>
-            <div class='container-fluid'>
-                <div class='col-md-2'></div>
-                <div class='col-md-8 col-sm-10 col-xs-9'>
-                    <div class='scrolling'>
-                        <div class='inner'>";
+</div>
+";
 
 
 
 
-echo"                        <table class='table table-striped table-hover table-condensed'>
-                                <tr>
-                                    <th>Date </th>
-                                    <td>Content One</td>
-                                    <td>Longer Content Two</td>
-                                    <td>Third Content Contains More</td>
-                                    <td>Short Four</td>
-                                    <td>Standard Five</td>
-                                    <td>Who's Counting</td>
-                                </tr>
-                                <tr>
-                                    <th>lolo</th>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                </tr>
-                                <tr>
-                                    <th>lolo</th>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                </tr>
-                                <tr>
-                                    <th>lolo</th>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                    <td>12</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+echo "
 
         <script src='js/jquery-1.10.2.min.js'></script>
         <script src='js/bootstrap.min.js'></script>
         <script src='js/ripples.min.js'></script>
         <script src='js/material.min.js'></script>
         <script src='js/snackbar.min.js'></script>
+        <script src='js/jquery-ui.js'></script>
         <script src='js/jquery.nouislider.min.js'></script>
 
     </body>

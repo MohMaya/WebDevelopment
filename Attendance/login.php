@@ -6,7 +6,7 @@
     else{
         $status = $_SESSION['status'];
         if($status == 3){
-            header('Location:teacherDashboard.php');
+            header('Location:teacherDashboardBackend.php');
             exit(0);
 
         }elseif($status == 2){

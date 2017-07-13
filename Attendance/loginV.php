@@ -9,7 +9,7 @@
         if($status == 2){
             header('Location: studentDashboard.php');
         }elseif($status == 3){
-            header('Location: teacherDashboard.php');
+            header('Location: teacherDashboardBackend.php');
         }
     }
 
@@ -107,7 +107,7 @@
           $_SESSION['first_name'] = $teacherInfo['first_name'];
           $_SESSION['teacher_id'] = $teacherInfo['teacher_id'];
 
-          header("location:teacherDashboard.php");
+          header("location:teacherDashboardBackend.php");
           exit(0);
         }
 
